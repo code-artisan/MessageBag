@@ -1,4 +1,4 @@
-import MessageBag from './MessageBag.es6';
+import MessageBag from '../MessageBag.es6';
 
 window.$messages = new MessageBag({
   'email': [

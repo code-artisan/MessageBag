@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
   cache: true,
-  entry: './example.es6',
+  entry: './examples/message-bag-example.es6',
   module: {
     loaders: [
       {
@@ -12,9 +12,8 @@ module.exports = {
     ]
   },
   output: {
-    publicPath: '/dist',
     filename: 'message-bag-example.js',
-    path: path.join(__dirname, 'dist')
+    path: path.join(__dirname, 'examples')
   },
   resolve: {
     alias: {
