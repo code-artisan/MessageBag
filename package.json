@@ -1,8 +1,8 @@
 {
-  "name": "laravel-message-bag",
+  "name": "message-bag.js",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "MessageBag.es6",
   "scripts": {
     "build": "./node_modules/.bin/webpack -p -w",
     "test": "echo \"Error: no test specified\" && exit 1"
