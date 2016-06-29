@@ -6,6 +6,8 @@
 </head>
 <body>
 
-<script src="/dist/MessageBag.js"></script>
+用户几乎跟 laravel 的 message bag 几乎一致，且新增了 clear 和 refresh 方法，因为前端有 ajax 提交和事件处理，页面并不会跳转，需要动态的刷新消息，然后再显示出来。打开调试工具查看效果，你也可以在 console 面板中使用 $messages 变量进行测试。
+
+<script src="./dist/message-bag-example.js"></script>
 </body>
 </html>

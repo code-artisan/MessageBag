@@ -1,12 +1,13 @@
+import Str from 'Str';
 import _ from 'underscore';
-import MessageProvider from './MessageProvider.es6';
+import MessageProvider from './providers/MessageProvider.es6';
 
 class MessageBag extends MessageProvider {
 
   /**
    * Create a new message bag instance.
    *
-   * @param  array  $messages
+   * @param  object  $messages
    * @return void
    */
   constructor(messages = {}) {
@@ -17,7 +18,7 @@ class MessageBag extends MessageProvider {
     this.format = ':message';
 
     _.each(messages, (message, key) => {
-      this.$messages[key] = Array(message); // Cover to an array.
+      this.$messages[key] =  _.isArray(message) ? message : [message];
     });
   }
 
@@ -35,7 +36,7 @@ class MessageBag extends MessageProvider {
    *
    * @param  string  $key
    * @param  string  $message
-   * @return $this
+   * @return this
    */
   add(key, message) {
     if (this.isUnique(key, message)) {
@@ -48,8 +49,8 @@ class MessageBag extends MessageProvider {
   /**
    * Merge a new array of messages into the bag.
    *
-   * @param  \Illuminate\Contracts\Support\MessageProvider|array  $messages
-   * @return $this
+   * @param  MessageProvider|object  $messages
+   * @return this
    */
   merge(messages) {
     if (messages instanceof MessageBag) {
@@ -60,12 +61,23 @@ class MessageBag extends MessageProvider {
 
     _.each(keys, (key) => {
       if (this.has(key)) {
-        this.$messages[key][0] = [
-          ...this.$messages[key][0],
-          ...messages[key]
-        ];
+        if (_.isArray(messages[key])) {
+          this.$messages[key] = [
+            ...this.$messages[key],
+            ...messages[key]
+          ];
+        } else {
+          this.$messages[key] = [
+            ...this.$messages[key],
+            messages[key]
+          ];
+        }
       } else {
-        this.$messages[key] = Array(messages[key]);
+        if (_.isArray(messages[key])) {
+          this.$messages[key] = messages[key];
+        } else {
+          this.$messages[key] = [messages[key]];
+        }
       }
     });
 
@@ -103,8 +115,7 @@ class MessageBag extends MessageProvider {
   first(key = null, format = null) {
     let messages = _.isNull(key) ? this.all(format) : this.get(key, format);
 
-    return _.isArray(messages) ? (messages.length > 0 ? _.first(messages) : '')
-            : messages;
+    return messages.length > 0 ? _.first(messages) : '';
   }
 
   /**
@@ -112,7 +123,7 @@ class MessageBag extends MessageProvider {
    *
    * @param  string  $key
    * @param  string  $format
-   * @return array
+   * @return array|object
    */
   get(key, format = null) {
     if (_.isArray(this.$messages[key])) {
@@ -126,7 +137,7 @@ class MessageBag extends MessageProvider {
    * Get all of the messages for every key in the bag.
    *
    * @param  string  $format
-   * @return array
+   * @return object
    */
   all(format = null) {
     format = this.checkFormat(format);
@@ -143,29 +154,28 @@ class MessageBag extends MessageProvider {
    * Get all of the unique messages for every key in the bag.
    *
    * @param  string  $format
-   * @return array
+   * @return int
    */
   unique() {
     return new Date().getTime();
   }
 
   /**
-   * Format an array of messages. @TODO
+   * Format an object of messages.
    *
-   * @param  array   $messages
+   * @param  object   $messages
    * @param  string  $format
    * @param  string  $messageKey
-   * @return array
+   * @return object
    */
   transform(messages, format, messageKey) {
-    // let result = messages,
-    //     replace = [':message', ':key'];
+    let replace = [':message', ':key'], result = [];
 
-    // _.each(messages, (message) => {
-    //   message = Str.replace(replace, [message, messageKey], format);
-    // });
+    _.each(messages, (message, key) => {
+      result[key] = Str.replace(replace, [message, messageKey], format);
+    });
 
-    // return result;
+    return result;
   }
 
   /**
@@ -181,7 +191,7 @@ class MessageBag extends MessageProvider {
   /**
    * Get the raw messages in the container.
    *
-   * @return array
+   * @return object
    */
   messages() {
     return this.$messages;
@@ -190,16 +200,16 @@ class MessageBag extends MessageProvider {
   /**
    * Get the raw messages in the container.
    *
-   * @return array
+   * @return object
    */
   getMessages() {
-    return this.$messages();
+    return this.messages();
   }
 
   /**
    * Get the messages for the instance.
    *
-   * @return \Illuminate\Support\MessageBag
+   * @return MessageBag
    */
   getMessageBag() {
     return this;
@@ -254,9 +264,32 @@ class MessageBag extends MessageProvider {
   }
 
   /**
+   * Refresh the messages.
+   *
+   * @param  object messages
+   * @return void
+   */
+  refresh(messages = {}) {
+    this.clear();
+
+    if (_.keys(messages).length > 0) {
+      this.merge(messages);
+    }
+  }
+
+  /**
+   * Clear all of the messages.
+   *
+   * @return void
+   */
+  clear() {
+    this.$messages = {};
+  }
+
+  /**
    * Get the instance as an array.
    *
-   * @return array
+   * @return object
    */
   toArray() {
     return this.getMessages();
@@ -265,7 +298,7 @@ class MessageBag extends MessageProvider {
   /**
    * Convert the object into something JSON serializable.
    *
-   * @return array
+   * @return object
    */
   jsonSerialize(options = 0) {
     return JSON.stringify(this.$messages, null, options);
