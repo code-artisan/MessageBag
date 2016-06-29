@@ -270,8 +270,6 @@ class MessageBag extends MessageProvider {
    * @return void
    */
   refresh(messages = {}) {
-    this.clear();
-
     if (_.keys(messages).length > 0) {
       this.merge(messages);
     }
