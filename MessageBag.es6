@@ -62,21 +62,29 @@ class MessageBag extends MessageProvider {
     _.each(keys, (key) => {
       if (this.has(key)) {
         if (_.isArray(messages[key])) {
-          this.$messages[key] = [
-            ...this.$messages[key],
-            ...messages[key]
-          ];
+          this.$messages = _.extend({}, this.$messages, {
+            [key]: [
+              ...this.$messages[key],
+              ...messages[key]
+            ]
+          });
         } else {
-          this.$messages[key] = [
-            ...this.$messages[key],
-            messages[key]
-          ];
+          this.$messages = _.extend({}, this.$messages, {
+            [key]: [
+              ...this.$messages[key],
+              messages[key]
+            ]
+          });
         }
       } else {
         if (_.isArray(messages[key])) {
-          this.$messages[key] = messages[key];
+          this.$messages = _.extend({}, this.$messages, {
+            [key]: messages[key]
+          });
         } else {
-          this.$messages[key] = [messages[key]];
+          this.$messages = _.extend({}, this.$messages, {
+            [key]: [messages[key]]
+          });
         }
       }
     });
@@ -271,7 +279,7 @@ class MessageBag extends MessageProvider {
    */
   refresh(messages = {}) {
     if (_.keys(messages).length > 0) {
-      this.merge(messages);
+      return this.merge(messages);
     }
   }
 
