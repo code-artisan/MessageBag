@@ -4,6 +4,7 @@
   "description": "",
   "main": "MessageBag.es6",
   "scripts": {
+    "start": "./node_modules/.bin/webpack -p -w",
     "build": "./node_modules/.bin/webpack -p -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

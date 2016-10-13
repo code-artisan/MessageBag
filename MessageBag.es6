@@ -305,6 +305,16 @@ class MessageBag extends MessageProvider {
     return this.getMessages();
   }
 
+  trans() {
+    let result = {};
+
+    _.each(this.$messages, (message, key) => {
+      result[ key ] = message.length !== 0;
+    });
+
+    return result;
+  }
+
   /**
    * Convert the object into something JSON serializable.
    *
