@@ -121,7 +121,12 @@ class MessageBag extends MessageProvider {
    * @return string
    */
   first(key = null, format = null) {
-    let messages = _.isNull(key) ? this.all(format) : this.get(key, format);
+    let messages = _.isNull(key) ? this.all(format) : this.get(key, format),
+        keys = _.keys(messages);
+
+    if ( ! _.has(messages, 'length') && keys.length > 0 ) {
+      messages = messages[ _.first(keys) ];
+    }
 
     return messages.length > 0 ? _.first(messages) : '';
   }
