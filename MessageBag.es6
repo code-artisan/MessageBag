@@ -1,8 +1,7 @@
 import Str from 'Str';
 import _ from 'underscore';
-import MessageProvider from './providers/MessageProvider.es6';
 
-class MessageBag extends MessageProvider {
+class MessageBag {
 
   /**
    * Create a new message bag instance.
@@ -11,8 +10,6 @@ class MessageBag extends MessageProvider {
    * @return void
    */
   constructor(messages = {}) {
-    super();
-
     this.$messages = {};
 
     this.format = ':message';
@@ -96,11 +93,11 @@ class MessageBag extends MessageProvider {
    * Determine if a key and message combination already exists.
    *
    * @param  string  $key
-   * @param  string  $message
+   * @param  string  $messages
    * @return bool
    */
-  isUnique(key, message) {
-    return ! _.has(key, this.$messages);
+  isUnique(key, messages) {
+    return _.has(this.$messages, key) || _.has(messages, key);
   }
 
   /**
@@ -109,8 +106,8 @@ class MessageBag extends MessageProvider {
    * @param  string  $key
    * @return bool
    */
-  has(key = null) {
-    return this.first(key) !== '';
+  has(key) {
+    return _.isString(key) ? this.first(key) !== '' : false;
   }
 
   /**
@@ -310,6 +307,17 @@ class MessageBag extends MessageProvider {
     return this.getMessages();
   }
 
+  /**
+   * Translate to an object. E.g:
+   *
+   * result = {
+   *   'email': true,
+   *   'username': true,
+   *   'password': false
+   * };
+   *
+   * @return {object}
+   */
   trans() {
     let result = {};
 
