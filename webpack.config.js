@@ -6,8 +6,13 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.(es6)$/,
-        loader: 'babel'
+        test: /\.(es6|js)$/,
+        loader: 'babel',
+        include: [
+          path.resolve(__dirname, 'index.es6'),
+          path.resolve(__dirname, 'examples'),
+          path.resolve(__dirname, 'node_modules/str-help'),
+        ]
       }
     ]
   },
@@ -15,9 +20,4 @@ module.exports = {
     filename: 'message-bag-example.js',
     path: path.join(__dirname, 'examples')
   },
-  resolve: {
-    alias: {
-      Str: 'Str.js'
-    }
-  }
 };

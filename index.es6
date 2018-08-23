@@ -1,4 +1,4 @@
-import Str from 'Str';
+import Str from 'str-help';
 import _ from 'underscore';
 
 class MessageBag {
